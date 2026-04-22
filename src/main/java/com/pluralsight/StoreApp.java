@@ -1,26 +1,36 @@
 package com.pluralsight;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 
 
 public class StoreApp {
     public static void main(String[] args) {
-        ArrayList<Product> inventory = getInventory();
-        System.out.println("We carry the following inventory: ");
-        for (Product p : inventory) {
-            System.out.printf("id: %d %s - Price: $%.2f%n",
-                    p.getId(), p.getName(), p.getPrice());
+        try {
+            ArrayList<Product> inventory = new ArrayList<Product>();
+            BufferedReader buffReader = new BufferedReader(new FileReader("src/main/resources/inventory.csv"));
+
+            String fileLine;
+            int i = 0;
+            System.out.println("We carry the following inventory: ");
+            while ((fileLine = buffReader.readLine()) != null) {
+                String[] productInfo = fileLine.split("\\|");
+                Product newProduct = new Product(
+                        Integer.parseInt(productInfo[0]),
+                        productInfo[1],
+                        Double.parseDouble(productInfo[2])
+                );
+               inventory.add(newProduct);
+                System.out.printf("id: %d %s - Price: $%.2f%n",
+                        newProduct.getId(), newProduct.getName(), newProduct.getPrice());
+               i++;
+            }
+            buffReader.close();
+        } catch (IOException e){
+            System.err.println(e);
+            System.err.println("This file can not be reached!");
         }
-}
-    public static ArrayList<Product> getInventory() {
-        ArrayList<Product> inventory = new ArrayList<Product>();
-
-        inventory.add(new Product(1, "Laptop", 999.99));
-        inventory.add(new Product(2, "Wireless Mouse", 25.50));
-        inventory.add(new Product(3, "Mechanical Keyboard", 89.99));
-        inventory.add(new Product(4, "USB-C Cable (2m)", 12.75));
-        inventory.add(new Product(6, "Noise Cancelling Headphones", 199.95));
-
-        return inventory;
     }
 }

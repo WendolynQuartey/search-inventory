@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Scanner;
+import java.util.Comparator;
 
 
 public class StoreApp {
@@ -22,15 +24,23 @@ public class StoreApp {
                         productInfo[1],
                         Double.parseDouble(productInfo[2])
                 );
-               inventory.add(newProduct);
-                System.out.printf("id: %d %s - Price: $%.2f%n",
-                        newProduct.getId(), newProduct.getName(), newProduct.getPrice());
-               i++;
+                inventory.add(newProduct);
             }
+              listSortedProducts(inventory);
             buffReader.close();
         } catch (IOException e){
             System.err.println(e);
             System.err.println("This file can not be reached!");
+        }
+    }
+
+    public static void listSortedProducts(ArrayList<Product> inventory){
+        Comparator<Product> productComparator = Comparator.comparing(Product::getName);
+        inventory.sort(productComparator);
+
+        for (Product p : inventory) {
+            System.out.printf("id: %d %s - Price: $%.2f%n",
+                    p.getId(), p.getName(), p.getPrice());
         }
     }
 }
